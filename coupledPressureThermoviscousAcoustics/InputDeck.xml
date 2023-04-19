@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='utf-8'?>
+<cfsSimulation xmlns='http://www.cfs++.org/simulation'
+	xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+	xsi:schemaLocation='http://www.cfs++.org/simulation 
+ https://opencfs.gitlab.io/cfs/xml/CFS-Simulation/CFS.xsd'>
+
+	<fileFormats>
+		<input>
+			<cdb fileName='SchwarzPLinerMeshMeterTet4.cdb' />
+		</input>
+		<output>
+			<hdf5 extension="cfs" />
+			<text id='txt' />
+		</output>
+		<materialData file='Material.xml' format='xml' />
+	</fileFormats>
+	<domain geometryType='3d'>
+		<regionList>
+			<region name='element set 1' material='Air' />
+		</regionList>
+	</domain>
+	<sequenceStep>
+		<analysis>
+			<harmonic>
+				<numFreq>150</numFreq>
+				<startFreq>377</startFreq>
+				<stopFreq>3400</stopFreq>
+				<sampling>linear</sampling>
+			</harmonic>
+		</analysis>
+		<pdeList>
+			<acoustic formulation="acouPressure" >
+				<regionList>
+					<region name="element set 1" complexFluid="no" />
+				</regionList>
+				<bcsAndLoads>
+					<pressure name="node set 1" value="63.2" />
+					<boundaryLayer name="node set 2"
+						volumeRegion="element set 1" cp="1005.4" cv="1005.4/1.4"
+						nu="1.506e-5" k="1005.4*1.205*1.506e-5/0.708" />
+				</bcsAndLoads>
+				<storeResults>
+					<nodeResult type="acouPressure" complexFormat="realImag">
+						<allRegions outputIds="hdf5" />
+					</nodeResult>
+					<elemResult type="acouPressure" complexFormat="realImag">
+						<allRegions outputIds="hdf5" />
+					</elemResult>
+				</storeResults>
+			</acoustic>
+		</pdeList>
+	</sequenceStep>
+</cfsSimulation>
